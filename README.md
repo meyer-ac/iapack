@@ -9,7 +9,7 @@ cd iapack
 g++ -o iapack iapack.cpp
 ```
 
-**WARNING: ** This software has only been tested under a Debian 12 setup together with the HP 1663E logic analyzer.
+**WARNING:** This software has only been tested under a Debian 12 setup together with the HP 1663E logic analyzer.
 
 ## Usage
 The `iapack` utility expects an input file (the `.R`-file), a name for the output file (by convention the same as the input file without the extension) and a short description, which will be displayed in the file browser of the logic analyzer. Example:
