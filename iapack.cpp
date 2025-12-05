@@ -30,6 +30,7 @@ THE SOFTWARE.
 
 #include "cxxopts.hpp"
 
+constexpr std::size_t file_size_offset = 516;
 constexpr std::size_t desc_offset = 518;
 constexpr std::size_t desc_len = 547 - 518;
 constexpr std::uint8_t header[0x227] = {
@@ -139,12 +140,21 @@ int main(int argc, char* argv[]) {
             buffer[desc_offset + i] = c;
         }
 
-        std::ifstream input(in_file, std::ios::binary);
+        std::ifstream input(in_file, std::ios::binary | std::ios::ate);
         if (!input) {
             std::cerr << "Error: Failed to open file \"" << in_file << "\""
                       << std::endl;
             return 1;
         }
+	input.seekg(0, std::ios_base::end);
+	std::size_t file_size = input.tellg();
+	input.seekg(0, std::ios_base::beg);
+	if (file_size > 0xFFFF) {
+		std::cerr << "Error: file is too large" << std::endl;
+		return 1;
+	}
+	buffer[file_size_offset] = 0xFF & (file_size >> 8);
+	buffer[file_size_offset + 1] = 0xFF & file_size;
         buffer.insert(buffer.end(), std::istreambuf_iterator<char>(input),
                       std::istreambuf_iterator<char>());
 
